@@ -6,6 +6,6 @@ Here are the note I took about the CKAD Exercises proposed by Dimitris-Ilias Gka
  here :  
 https://github.com/dgkanatsios/CKAD-exercises
 
-Also additional practical cases to be totally ready for the exam day..
+Also additional practical cases to be totally ready for the exam day.
 
 To create a local Kubernetes cluster, you can [use Kind](https://dev.to/jdxlabs/a-local-kubernetes-cluster-in-seconds-with-kind-31lc).

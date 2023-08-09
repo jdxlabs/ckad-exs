@@ -61,45 +61,45 @@ k get po
 ## 10 : Get nginx pod's ip created in previous step, use a temp busybox image to wget its '/'
 ```bash
 k get po -o wide
-k run tmp --image=nginx:alpine --rm -it --restart=Never -- curl http://10.244.0.8
+k run tmp --image=nginx:alpine --rm -it --restart=Never -- curl http://<current-ip>
 ```
 
 ## 11 : Get pod's YAML
 ```bash
-
+k get po nginx $o
 ```
 
 ## 12 : Get information about the pod, including details about potential issues (e.g. pod hasn't started)
 ```bash
-
+k describe po nginx
 ```
 
 ## 13 : Get pod logs
 ```bash
-
+k logs nginx
 ```
 
 ## 14 : If pod crashed and restarted, get logs about the previous instance
 ```bash
-
+k logs nginx -p
 ```
 
 ## 15 : Execute a simple shell on the nginx pod
 ```bash
-
+k exec -it nginx -- sh
 ```
 
 ## 16 : Create a busybox pod that echoes 'hello world' and then exits
 ```bash
-
+k run tmp --image=busybox -it --restart=Never -- sh -c 'echo "hello world"'
 ```
 
 ## 17 : Do the same, but have the pod deleted automatically when it's completed
 ```bash
-
+k run tmp --image=busybox --rm -it --restart=Never -- sh -c 'echo "hello world"'
 ```
 
 ## 18 : Create an nginx pod and set an env value as 'var1=val1'. Check the env value existence within the pod
 ```bash
-
+k run nginx --image=nginx --rm -it --env="var1=val1" --restart=Never -- sh -c 'echo $var1'
 ```

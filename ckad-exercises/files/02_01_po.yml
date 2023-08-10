@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: tmp
+  name: tmp
+spec:
+  containers:
+  - args:
+    - sh
+    - -c
+    - echo hello; sleep 3600
+    image: busybox
+    name: tmp
+    resources: {}
+  - args:
+    - sh
+    - -c
+    - echo hello; sleep 3600
+    image: busybox
+    name: tmp2
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}

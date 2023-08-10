@@ -2,7 +2,7 @@
 
 ## Exercices to work for the CKAD certification
 
-Here are the note I took about the CKAD Exercises proposed by Dimitris-Ilias Gkanatsios
+The repository contains the note I took about the CKAD Exercises proposed by Dimitris-Ilias Gkanatsios
  here :  
 https://github.com/dgkanatsios/CKAD-exercises
 

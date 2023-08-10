@@ -1,3 +1,194 @@
+# Labels And Annotations
+
+## 1 : Create 3 pods with names nginx1,nginx2,nginx3. All of them should have the label app=v1
+
+```bash
+k run nginx1 --image=nginx --restart=Never --labels=app=v1
+k run nginx2 --image=nginx --restart=Never --labels=app=v1
+k run nginx3 --image=nginx --restart=Never --labels=app=v1
+# k delete po --all
+```
+
+## 2 : Show all labels of the pods
+
+```bash
+k get po --show-labels
+```
+
+## 3 : Change the labels of pod 'nginx2' to be app=v2
+
+```bash
+k label po nginx2 app=v2 --overwrite
+```
+
+## 4 : Get the label 'app' for the pods (show a column with APP labels)
+
+```bash
+k get po -L app
+```
+
+## 5 : Get only the 'app=v2' pods
+
+```bash
+k get po -l app=v2
+```
+
+## 6 : Add a new label tier=web to all pods having 'app=v2' or 'app=v1' labels
+
+```bash
+```
+
+## 7 : Add an annotation 'owner: marketing' to all pods having 'app=v2' label
+
+```bash
+```
+
+## 8 : Remove the 'app' label from the pods we created before
+
+```bash
+```
+
+## 9 : Annotate pods nginx1, nginx2, nginx3 with "description='my description'" value
+
+```bash
+```
+
+## 10 : Check the annotations for pod nginx1
+
+```bash
+
+```
+
+## 11 : Remove the annotations for these three pods
+
+```bash
+
+```
+
+## 12 : Remove these pods to have a clean state in your cluster
+
+```bash
+
+```
+
+# Pod Placement
+
+## 1 : Create a pod that will be deployed to a Node that has the label 'accelerator=nvidia-tesla-p100'
+
+```bash
+
+```
+
+## 2 : Taint a node with key tier and value frontend with the effect NoSchedule. Then, create a pod that tolerates this taint.
+
+```bash
+
+```
+
+## 3 : Create a pod that will be placed on node controlplane. Use nodeSelector and tolerations.
+
+```bash
+
+```
+
+# Deployments
+
+## 1 : 
+
+```bash
+
+```
+
+## 2 : 
+
+```bash
+```
+
+## 3 : 
+
+```bash
+```
+
+## 4 : 
+
+```bash
+```
+
+## 5 : 
+
+```bash
+```
+
+## 6 : 
+
+```bash
+```
+
+## 7 : 
+
+```bash
+```
+
+## 8 : 
+
+```bash
+```
+
+## 9 : 
+
+```bash
+```
+
+# Jobs
+
+## 1 : 
+
+```bash
+
+```
+
+## 2 : 
+
+```bash
+```
+
+## 3 : 
+
+```bash
+```
+
+## 4 : 
+
+```bash
+```
+
+## 5 : 
+
+```bash
+```
+
+## 6 : 
+
+```bash
+```
+
+## 7 : 
+
+```bash
+```
+
+## 8 : 
+
+```bash
+```
+
+## 9 : 
+
+```bash
+```
+
+# Cron Jobs
+
 ## 1 : 
 
 ```bash

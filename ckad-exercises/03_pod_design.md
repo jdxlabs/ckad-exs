@@ -1,4 +1,4 @@
-# Labels And Annotations
+# A. Labels And Annotations
 
 ## 1 : Create 3 pods with names nginx1,nginx2,nginx3. All of them should have the label app=v1
 
@@ -78,18 +78,38 @@ k annotate po nginx1 nginx2 nginx3 description-
 k delete po --all $f
 ```
 
-# Pod Placement
+# B. Pod Placement
 
 ## 1 : Create a pod that will be deployed to a Node that has the label 'accelerator=nvidia-tesla-p100'
 
 ```bash
+# apply a label to a node
+k label node kind1-control-plane accelerator=nvidia-tesla-p100
 
+# show labels of nodes
+k get nodes --show-labels
+
+k run nginx --image=nginx --restart=Never --labels=accelerator=nvidia-tesla-p100
 ```
 
 ## 2 : Taint a node with key tier and value frontend with the effect NoSchedule. Then, create a pod that tolerates this taint.
 
 ```bash
+k taint node kind1-control-plane tier=frontend:NoSchedule
 
+# show taints of nodes
+k get nodes -o json | jq '.items[].spec.taints'
+
+k run nginx --image=nginx $dry $o > files/03_b_02_po.yml
+
+# add toleration to nginx.yaml, after the containers section
+tolerations:
+- key: "tier"
+  operator: "Equal"
+  value: "frontend"
+  effect: "NoSchedule"
+
+k apply -f files/03_b_02_po.yml
 ```
 
 ## 3 : Create a pod that will be placed on node controlplane. Use nodeSelector and tolerations.

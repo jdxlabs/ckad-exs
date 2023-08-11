@@ -30,45 +30,52 @@ k get po -L app
 ## 5 : Get only the 'app=v2' pods
 
 ```bash
-k get po -l app=v2
+k get po -L app -l app=v2
 ```
 
 ## 6 : Add a new label tier=web to all pods having 'app=v2' or 'app=v1' labels
 
 ```bash
+k label po -l "app in(v1,v2)" tier=web
+k get po -L app,tier
 ```
 
 ## 7 : Add an annotation 'owner: marketing' to all pods having 'app=v2' label
 
 ```bash
+k annotate po -l app=v2 owner=marketing
+k annotate po --all --list
 ```
 
 ## 8 : Remove the 'app' label from the pods we created before
 
 ```bash
+k label po --all app-
+k get po -L app,tier
 ```
 
 ## 9 : Annotate pods nginx1, nginx2, nginx3 with "description='my description'" value
 
 ```bash
+k annotate po nginx1 nginx2 nginx3 description='my description'
 ```
 
 ## 10 : Check the annotations for pod nginx1
 
 ```bash
-
+k describe po nginx1 | grep -i -A 10 annotat
 ```
 
 ## 11 : Remove the annotations for these three pods
 
 ```bash
-
+k annotate po nginx1 nginx2 nginx3 description-
 ```
 
 ## 12 : Remove these pods to have a clean state in your cluster
 
 ```bash
-
+k delete po --all $f
 ```
 
 # Pod Placement

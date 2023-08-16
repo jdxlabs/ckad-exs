@@ -36,7 +36,7 @@ k create ns ns2 $dry $o
 
 ## 6 : Get the YAML for a new ResourceQuota called 'rq1' with hard limits of 1 CPU, 1G memory and 2 pods without creating it
 ```bash
-k create quota rq1 --hard=cpu=1,memory=1G,pods=2 $dry $o > 01_06_rq.yml
+k create quota rq1 --hard=cpu=1,memory=1G,pods=2 $dry $o > files/01_06_rq.yml
 ```
 
 ## 7 : Get pods on all namespaces

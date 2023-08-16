@@ -90,6 +90,7 @@ k label node kind1-control-plane accelerator=nvidia-tesla-p100
 k get nodes --show-labels
 
 k run nginx --image=nginx --restart=Never --labels=accelerator=nvidia-tesla-p100
+# it runs even if the node isn't labeled
 ```
 
 ## 2 : Taint a node with key tier and value frontend with the effect NoSchedule. Then, create a pod that tolerates this taint.

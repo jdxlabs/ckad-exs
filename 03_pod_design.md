@@ -101,7 +101,7 @@ k taint node kind1-control-plane tier=frontend:NoSchedule
 # show taints of nodes
 k get nodes -o json | jq '.items[].spec.taints'
 
-k run nginx --image=nginx $dry $o > files/03_b_02_po.yml
+k run nginx --image=nginx $dry $o > files/03_02_po.yml
 
 # add toleration to nginx.yaml, after the containers section
 tolerations:
@@ -110,13 +110,21 @@ tolerations:
   value: "frontend"
   effect: "NoSchedule"
 
-k apply -f files/03_b_02_po.yml
+k apply -f files/03_02_po.yml
 ```
 
 ## 3 : Create a pod that will be placed on node controlplane. Use nodeSelector and tolerations.
 
 ```bash
+k run nginx --image=nginx $dry $o > files/03_03_po.yml
 
+# Add nodeSelector and tolerations in the "spec" section
+  nodeSelector:
+    kubernetes.io/hostname: kind1-control-plane
+  tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
 ```
 
 # Deployments

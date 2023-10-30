@@ -113,7 +113,7 @@ tolerations:
 k apply -f files/03_02_po.yml
 ```
 
-## 3 : Create a pod that will be placed on node controlplane. Use nodeSelector and tolerations.
+## 3 : Create a pod that will be placed on node kind1-control-plane. Use nodeSelector and tolerations.
 
 ```bash
 k run nginx --image=nginx $dry $o > files/03_03_po.yml

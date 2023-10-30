@@ -1,4 +1,4 @@
-# A. Labels And Annotations
+# Labels And Annotations
 
 ## 1 : Create 3 pods with names nginx1,nginx2,nginx3. All of them should have the label app=v1
 
@@ -78,9 +78,10 @@ k annotate po nginx1 nginx2 nginx3 description-
 k delete po --all $f
 ```
 
-# B. Pod Placement
 
-## 1 : Create a pod that will be deployed to a Node that has the label 'accelerator=nvidia-tesla-p100'
+# Pod Placement
+
+## 13 : Create a pod that will be deployed to a Node that has the label 'accelerator=nvidia-tesla-p100'
 
 ```bash
 # apply a label to a node
@@ -93,7 +94,7 @@ k run nginx --image=nginx --restart=Never --labels=accelerator=nvidia-tesla-p100
 # it runs even if the node isn't labeled
 ```
 
-## 2 : Taint a node with key tier and value frontend with the effect NoSchedule. Then, create a pod that tolerates this taint.
+## 14 : Taint a node with key tier and value frontend with the effect NoSchedule. Then, create a pod that tolerates this taint.
 
 ```bash
 k taint node kind1-control-plane tier=frontend:NoSchedule
@@ -101,7 +102,7 @@ k taint node kind1-control-plane tier=frontend:NoSchedule
 # show taints of nodes
 k get nodes -o json | jq '.items[].spec.taints'
 
-k run nginx --image=nginx $dry $o > files/03_02_po.yml
+k run nginx --image=nginx $dry $o > files/03_14_po.yml
 
 # add toleration to nginx.yaml, after the containers section
 tolerations:
@@ -110,13 +111,13 @@ tolerations:
   value: "frontend"
   effect: "NoSchedule"
 
-k apply -f files/03_02_po.yml
+k apply -f files/03_14_po.yml
 ```
 
-## 3 : Create a pod that will be placed on node kind1-control-plane. Use nodeSelector and tolerations.
+## 15 : Create a pod that will be placed on node kind1-control-plane. Use nodeSelector and tolerations.
 
 ```bash
-k run nginx --image=nginx $dry $o > files/03_03_po.yml
+k run nginx --image=nginx $dry $o > files/03_15_po.yml
 
 # Add nodeSelector and tolerations in the "spec" section
   nodeSelector:
@@ -127,53 +128,109 @@ k run nginx --image=nginx $dry $o > files/03_03_po.yml
     effect: "NoSchedule"
 ```
 
+
 # Deployments
 
-## 1 : 
+## 16 : Create a deployment with image nginx:1.18.0, called nginx, having 2 replicas, defining port 80 as the port that this container exposes (don't create a service for this deployment)
+
+```bash
+k create deploy nginx --image=nginx:1.18.0 --replicas=2 --port=80
+```
+
+## 17 : View the YAML of this deployment
+
+```bash
+k get deploy nginx $o
+```
+
+## 18 : View the YAML of the replica set that was created by this deployment
+
+```bash
+k get rs nginx-54bcfc567b $o
+```
+
+## 19 : Get the YAML for one of the pods
+
+```bash
+k get po nginx-54bcfc567b-c8g7m $o
+```
+
+## 20 : Check how the deployment rollout is going
 
 ```bash
 
 ```
 
-## 2 : 
+## 21 : Update the nginx image to nginx:1.19.8
 
 ```bash
 ```
 
-## 3 : 
+## 22 : Check the rollout history and confirm that the replicas are OK
 
 ```bash
 ```
 
-## 4 : 
+## 23 : Undo the latest rollout and verify that new pods have the old image (nginx:1.18.0)
 
 ```bash
 ```
 
-## 5 : 
+## 24 : Do an on purpose update of the deployment with a wrong image nginx:1.91
 
 ```bash
 ```
 
-## 6 : 
+## 25 : Verify that something's wrong with the rollout
 
 ```bash
 ```
 
-## 7 : 
+## 26 : Return the deployment to the second revision (number 2) and verify the image is nginx:1.19.8
 
 ```bash
 ```
 
-## 8 : 
+## 27 : Check the details of the fourth revision (number 4)
 
 ```bash
 ```
 
-## 9 : 
+## 28 : Scale the deployment to 5 replicas
 
 ```bash
 ```
+
+## 29 : Autoscale the deployment, pods between 5 and 10, targetting CPU utilization at 80%
+
+```bash
+```
+
+## 30 : Pause the rollout of the deployment
+
+```bash
+```
+
+## 31 : Update the image to nginx:1.19.9 and check that there's nothing going on, since we paused the rollout
+
+```bash
+```
+
+## 32 : Resume the rollout and check that the nginx:1.19.9 image has been applied
+
+```bash
+```
+
+## 33 : Delete the deployment and the horizontal pod autoscaler you created
+
+```bash
+```
+
+## 34 : Implement canary deployment by running two instances of nginx marked as version=v1 and version=v2 so that the load is balanced at 75%-25% ratio
+
+```bash
+```
+
 
 # Jobs
 
@@ -222,6 +279,7 @@ k run nginx --image=nginx $dry $o > files/03_03_po.yml
 
 ```bash
 ```
+
 
 # Cron Jobs
 

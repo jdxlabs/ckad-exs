@@ -158,77 +158,104 @@ k get po nginx-54bcfc567b-c8g7m $o
 ## 20 : Check how the deployment rollout is going
 
 ```bash
-
+k rollout status deploy nginx
 ```
 
 ## 21 : Update the nginx image to nginx:1.19.8
 
 ```bash
+k set image deploy nginx nginx=nginx:1.19.8
+# or k edit deploy..
 ```
 
 ## 22 : Check the rollout history and confirm that the replicas are OK
 
 ```bash
+k rollout history deploy nginx
+k get rs  # 2 newly created replicas
 ```
 
 ## 23 : Undo the latest rollout and verify that new pods have the old image (nginx:1.18.0)
 
 ```bash
+k rollout undo deploy nginx
+k describe po nginx-54bcfc567b-h8v86  # check that the old image has been applied
 ```
 
 ## 24 : Do an on purpose update of the deployment with a wrong image nginx:1.91
 
 ```bash
+k set image deploy nginx nginx=nginx:1.91
+# or k edit deploy..
 ```
 
 ## 25 : Verify that something's wrong with the rollout
 
 ```bash
+k rollout status deploy nginx
+# or k get po => ImagePullBackOff
 ```
 
 ## 26 : Return the deployment to the second revision (number 2) and verify the image is nginx:1.19.8
 
 ```bash
+k rollout undo deploy nginx --to-revision=2
+k rollout status deploy nginx
+k describe po | grep -i image:
 ```
 
 ## 27 : Check the details of the fourth revision (number 4)
 
 ```bash
+k rollout history deploy nginx --revision=4
 ```
 
 ## 28 : Scale the deployment to 5 replicas
 
 ```bash
+k scale deploy nginx --replicas=5
 ```
 
 ## 29 : Autoscale the deployment, pods between 5 and 10, targetting CPU utilization at 80%
 
 ```bash
+k autoscale deploy nginx --min=5 --max=10 --cpu-percent=80
+k get hpa
 ```
 
 ## 30 : Pause the rollout of the deployment
 
 ```bash
+k rollout pause deploy nginx
 ```
 
 ## 31 : Update the image to nginx:1.19.9 and check that there's nothing going on, since we paused the rollout
 
 ```bash
+k set image deploy nginx nginx=nginx:1.19.9
+k rollout status deploy nginx
 ```
 
 ## 32 : Resume the rollout and check that the nginx:1.19.9 image has been applied
 
 ```bash
+k rollout resume deploy nginx
+k rollout status deploy nginx
+k describe po | grep -i image:
 ```
 
 ## 33 : Delete the deployment and the horizontal pod autoscaler you created
 
 ```bash
+k delete deploy nginx
+k delete hpa nginx
 ```
 
 ## 34 : Implement canary deployment by running two instances of nginx marked as version=v1 and version=v2 so that the load is balanced at 75%-25% ratio
 
 ```bash
+# k create deploy nginx --image=nginx --labels=version=v1 $dry $o > files/03_34_deploy1_po.yml
+# k create deploy nginx --image=nginx --labels=version=v2 $dry $o > files/03_34_deploy2_po.yml
 ```
 
 

@@ -254,8 +254,38 @@ k delete hpa nginx
 ## 34 : Implement canary deployment by running two instances of nginx marked as version=v1 and version=v2 so that the load is balanced at 75%-25% ratio
 
 ```bash
-# k create deploy nginx --image=nginx --labels=version=v1 $dry $o > files/03_34_deploy1_po.yml
-# k create deploy nginx --image=nginx --labels=version=v2 $dry $o > files/03_34_deploy2_po.yml
+k create deploy nginx --image=nginx $dry $o > files/03_34_deploy1_po.yml
+# add label : version: v1
+# and an initContainer to show version
+#   volumeMounts:
+#   - name: workdir
+#     mountPath: /usr/share/nginx/html
+# initContainers:
+# - name: install
+#   image: busybox:1.28
+#   command:
+#   - /bin/sh
+#   - -c
+#   - "echo version-1 > /work-dir/index.html"
+#   volumeMounts:
+#   - name: workdir
+#     mountPath: "/work-dir"
+# volumes:
+# - name: workdir
+#   emptyDir: {}
+
+k create deploy nginx --image=nginx $dry $o > files/03_34_deploy2_po.yml
+# add label : version: v2
+# and an initContainer to show version
+
+k create service clusterip nginx --tcp=80:80 $dry $o > files/03_34_svc_po.yml
+
+k apply -f files/03_34_deploy1_po.yml
+k apply -f files/03_34_deploy2_po.yml
+k apply -f files/03_34_svc.yml
+
+# check the response, at 75-25 ratio :
+k run tmp --image=busybox --rm -it --restart=Never -- sh -c 'while sleep 1; do wget -qO- http://nginx-svc; done'
 ```
 
 

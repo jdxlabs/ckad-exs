@@ -291,97 +291,122 @@ k run tmp --image=busybox --rm -it --restart=Never -- sh -c 'while sleep 1; do w
 
 # Jobs
 
-## 1 : 
+## 35 : Create a job named pi with image perl:5.34 that runs the command with arguments "perl -Mbignum=bpi -wle 'print bpi(2000)'"
 
 ```bash
-
+k create job pi --image=perl:5.34 -- sh -c "perl -Mbignum=bpi -wle 'print bpi(2000)'"
 ```
 
-## 2 : 
+## 36 : Wait till it's done, get the output
 
 ```bash
+k get po -w
+k logs pi-psf26
 ```
 
-## 3 : 
+## 37 : Create a job with the image busybox that executes the command 'echo hello;sleep 30;echo world'
 
 ```bash
+k create job box --image=busybox -- sh -c "echo hello;sleep 30;echo world"
 ```
 
-## 4 : 
+## 38 : Follow the logs for the pod (you'll wait for 30 seconds)
 
 ```bash
+k logs -f box-q94h7
 ```
 
-## 5 : 
+## 39 : See the status of the job, describe it and see the logs
 
 ```bash
+k get po box-q94h7
+k describe po box-q94h7
+k logs box-q94h7
 ```
 
-## 6 : 
+## 40 : Delete the job
 
 ```bash
+k delete job box
 ```
 
-## 7 : 
+## 41 : Create a job but ensure that it will be automatically terminated by kubernetes if it takes more than 30 seconds to execute
 
 ```bash
+k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_41_job.yml
+
+# add the spec : 
+# spec:
+#   activeDeadlineSeconds: 30
 ```
 
-## 8 : 
+## 42 : Create the same job, make it run 5 times, one after the other. Verify its status and delete it
 
 ```bash
+k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_42_job.yml
+
+# add the spec :
+# spec:
+#   completions: 5
 ```
 
-## 9 : 
+## 43 : Create the same job, but make it run 5 parallel times
 
 ```bash
+k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_43_job.yml
+
+# add the spec :
+# spec:
+#   parallelism: 5
 ```
 
 
 # Cron Jobs
 
-## 1 : 
+## 44 : Create a cron job with image busybox that runs on a schedule of "*/1 * * * *" and writes 'date; echo Hello from the Kubernetes cluster' to standard output
 
 ```bash
-
+k create cronjob box --image=busybox --schedule="*/1 * * * *" -- sh -c "date; echo Hello from the Kubernetes cluster"
 ```
 
-## 2 : 
+## 45 : See its logs and delete it
 
 ```bash
+k logs box-28316487-sg7kl
+k delete cronjob box
 ```
 
-## 3 : 
+## 46 : Create the same cron job again, and watch the status. Once it ran, check which job ran by the created cron job. Check the log, and delete the cron job
 
 ```bash
+k create cronjob box --image=busybox --schedule="*/1 * * * *" -- sh -c "date; echo Hello from the Kubernetes cluster"
+k get cj,job,po
+k logs box-28316490-fbh6f
+k delete cj box
 ```
 
-## 4 : 
+## 47 : Create a cron job with image busybox that runs every minute and writes 'date; echo Hello from the Kubernetes cluster' to standard output. The cron job should be terminated if it takes more than 17 seconds to start execution after its scheduled time (i.e. the job missed its scheduled time) 
 
 ```bash
+k create cronjob box --image=busybox --schedule="*/1 * * * *" $dry $o -- sh -c "date; echo Hello from the Kubernetes cluster" > files/03_47_cronjob.yml
+
+# add the spec :
+# spec:
+#   startingDeadlineSeconds: 17
 ```
 
-## 5 : 
+## 48 : Create a cron job with image busybox that runs every minute and writes 'date; echo Hello from the Kubernetes cluster' to standard output. The cron job should be terminated if it successfully starts but takes more than 12 seconds to complete execution
 
 ```bash
+k create cronjob box --image=busybox --schedule="*/1 * * * *" $dry $o -- sh -c "date; echo Hello from the Kubernetes cluster" > files/03_48_cronjob.yml
+
+# add the spec (in jobTemplate) :
+# spec:
+#   activeDeadlineSeconds: 12
 ```
 
-## 6 : 
+## 49 : Create a job from cronjob
 
 ```bash
-```
-
-## 7 : 
-
-```bash
-```
-
-## 8 : 
-
-```bash
-```
-
-## 9 : 
-
-```bash
+k create job --from=cronjob/box new-job
 ```

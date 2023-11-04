@@ -64,6 +64,9 @@ k annotate po nginx1 nginx2 nginx3 description='my description'
 
 ```bash
 k describe po nginx1 | grep -i -A 10 annotat
+
+# and for all pods
+k describe po $o | grep -i -A5 metadata
 ```
 
 ## 11 : Remove the annotations for these three pods

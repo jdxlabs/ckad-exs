@@ -173,17 +173,46 @@ k describe po nginx | grep -i request -A1
 ## 15 : Create ResourceQuota in namespace one with hard requests cpu=1, memory=1Gi and hard limits cpu=2, memory=2Gi
 
 ```bash
+k create ns one
+k create quota my-rq --namespace=one --hard=requests.cpu=1,requests.memory=1Gi,limits.cpu=2,limits.memory=2Gi
 
 ```
 
 ## 16 : Attempt to create a pod with resource requests cpu=2, memory=3Gi and limits cpu=3, memory=4Gi in namespace one
 
 ```bash
+k run nginx --image=nginx -n one $dry $o > files/04_16_po.yaml
+
+# add the following
+#   resources:
+#     requests:
+#       cpu: 2
+#       memory: 3Gi
+#     limits:
+#       cpu: 3
+#       memory: 4Gi
+
+# Expected error : 
+# Error from server (Forbidden): error when creating "files/04_16_po.yaml": pods "nginx" is forbidden: exceeded quota: my-rq, requested: limits.cpu=3,limits.memory=4Gi,requests.cpu=2,requests.memory=3Gi, used: limits.cpu=0,limits.memory=0,requests.cpu=0,requests.memory=0, limited: limits.cpu=2,limits.memory=2Gi,requests.cpu=1,requests.memory=1Gi
 ```
 
 ## 17 : Create a pod with resource requests cpu=0.5, memory=1Gi and limits cpu=1, memory=2Gi in namespace one
 
 ```bash
+k run nginx --image=nginx -n one $dry $o > files/04_17_po.yaml
+
+# add the following
+#   resources:
+#     requests:
+#       cpu: 0.5
+#       memory: 1Gi
+#     limits:
+#       cpu: 1
+#       memory: 2Gi
+
+# k get quota
+# NAME    AGE   REQUEST                                          LIMIT
+# my-rq   37s   requests.cpu: 500m/1, requests.memory: 1Gi/1Gi   limits.cpu: 1/2, limits.memory: 2Gi/2Gi
 ```
 
 

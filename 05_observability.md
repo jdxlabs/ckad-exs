@@ -3,12 +3,39 @@
 ## 1 : Create an nginx pod with a liveness probe that just runs the command 'ls'. Save its YAML in pod.yaml. Run it, check its probe status, delete it.
 
 ```bash
+k run nginx --image=nginx --restart=Never $dry $o > files/05_01_pod.yaml
+# add the following
+#  containers:
+#  - ...
+#    livenessProbe:
+#      exec:
+#        command:
+#        - ls
 
+k describe po nginx | grep -i liveness
+#   Liveness:       exec [ls] delay=0s timeout=1s period=10s #success=1 #failure=3
+
+k delete po nginx $f
 ```
 
 ## 2 : Modify the pod.yaml file so that liveness probe starts kicking in after 5 seconds whereas the interval between probes would be 5 seconds. Run it, check the probe, delete it.
 
 ```bash
+k run nginx --image=nginx --restart=Never $dry $o > files/05_02_pod.yaml
+# add the following
+#  containers:
+#  - ...
+#    livenessProbe:
+#      exec:
+#        command:
+#        - ls
+#      initialDelaySeconds: 5
+#      periodSeconds: 5
+
+k describe po nginx | grep -i liveness                                  
+#   Liveness:       exec [ls] delay=5s timeout=1s period=5s #success=1 #failure=3
+
+k delete po nginx $f
 ```
 
 ## 3 : Create an nginx pod (that includes port 80) with an HTTP readinessProbe on path '/' on port 80. Again, run it, check the readinessProbe, delete it.

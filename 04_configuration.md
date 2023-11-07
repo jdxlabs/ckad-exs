@@ -347,19 +347,26 @@ k exec -it consumer -- sh -c "cat /var/app/ssh-privatekey"
 ## 27 : See all the service accounts of the cluster in all namespaces
 
 ```bash
+k get sa
 ```
 
 ## 28 : Create a new serviceaccount called 'myuser'
 
 ```bash
+k create sa myuser
 ```
 
 ## 29 : Create an nginx pod that uses 'myuser' as a service account
 
 ```bash
+k run nginx --image=nginx $dry $o > files/04_29_po.yaml
+# add the following
+#  spec:
+#    serviceAccountName: myuser
 ```
 
 ## 30 : Generate an API token for the service account 'myuser'
 
 ```bash
+k create token myuser
 ```

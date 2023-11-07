@@ -221,46 +221,124 @@ k run nginx --image=nginx -n one $dry $o > files/04_17_po.yaml
 ## 18 : Create a secret called mysecret with the values password=mypass
 
 ```bash
+k create secret generic mysecret --from-literal=password=mypass
 ```
 
 ## 19 : Create a secret called mysecret2 that gets key/value from a file
 
 ```bash
+touch files/04_19_secret.txt
+echo -n admin > files/04_19_secret-username
+
+k create secret generic mysecret2 --from-file=files/04_19_secret-username
+
 ```
 
 ## 20 : Get the value of mysecret2
 
 ```bash
+k get secret mysecret2 $o
+echo -n YWRtaW4= | base64 -d
+
+# or
+k get secret mysecret2 -o jsonpath='{.data.04_19_secret-username}' | base64 -d
+
+# or, with template
+k get secret mysecret2 --template '{{.data}}'
+
+# or, with jq
+k get secret mysecret2 -o json | jq -r .data
 ```
 
 ## 21 : Create an nginx pod that mounts the secret mysecret2 in a volume on path /etc/foo
 
 ```bash
+k run nginx --image=nginx $dry $o > files/04_21_po.yaml
+
+# add the following
+#   volumes:
+#   - name: myvolume
+#     secret:
+#       secretName: mysecret2
+#   containers:
+#   - ...
+#     volumeMounts:
+#     - name: myvolume
+#       mountPath: /etc/foo
 ```
 
 ## 22 : Delete the pod you just created and mount the variable 'username' from secret mysecret2 onto a new nginx pod in env variable called 'USERNAME'
 
 ```bash
+k delete po nginx $f
+
+k run nginx --image=nginx $dry $o > files/04_22_po.yaml
+# add the following
+#   containers:
+#   - ...
+#     env:
+#     - name: USERNAME
+#       valueFrom:
+#         secretKeyRef:
+#           name: mysecret2
+#           key: 04_19_secret-username
 ```
 
 ## 23 : Create a Secret named 'ext-service-secret' in the namespace 'secret-ops'. Then, provide the key-value pair API_KEY=LmLHbYhsgWZwNifiqaRorH8T as literal
 
 ```bash
+k create ns secret-ops
+kn secret-ops
+k create secret generic ext-service-secret --from-literal=API_KEY=LmLHbYhsgWZwNifiqaRorH8T
+k get secrets ext-service-secret $o -o jsonpath="{.data.API_KEY}"
 ```
 
 ## 24 : Consuming the Secret. Create a Pod named 'consumer' with the image 'nginx' in the namespace 'secret-ops' and consume the Secret as an environment variable. Then, open an interactive shell to the Pod, and print all environment variables
 
 ```bash
+kn secret-ops
+k run consumer --image=nginx $dry $o -n secret-ops > files/04_24_po.yaml
+# add the following
+#   containers:
+#   - ...
+#     env:
+#     - name: API_KEY
+#       valueFrom:
+#         secretKeyRef:
+#           name: ext-service-secret
+#           key: API_KEY
+
+k exec -it consumer -- sh -c "env | grep API_KEY"
 ```
 
 ## 25 : Create a Secret named 'my-secret' of type 'kubernetes.io/ssh-auth' in the namespace 'secret-ops'. Define a single key named 'ssh-privatekey', and point it to the file 'id_rsa' in this directory
 
 ```bash
+kn secret-ops
+ssh-keygen -t rsa -b 2048 -n '' -f files/04_25_id_rsa
+k create secret generic my-secret --type=kubernetes.io/ssh-auth -n secret-ops --from-file=ssh-privatekey=files/04_25_id_rsa
 ```
 
 ## 26 : Create a Pod named 'consumer' with the image 'nginx' in the namespace 'secret-ops', and consume the Secret as Volume. Mount the Secret as Volume to the path /var/app with read-only access. Open an interactive shell to the Pod, and render the contents of the file
 
 ```bash
+kn secret-ops
+k run consumer --image=nginx $dry $o -n secret-ops > files/04_26_po.yaml
+
+# add the following
+#   volumes:
+#   - name: ssh
+#     secret:
+#       secretName: my-secret
+#   containers:
+#   - ...
+#     volumeMounts:
+#     - name: ssh
+#       mountPath: /var/app
+#       readOnly: true
+
+k exec -it consumer -- sh -c "cat /var/app/ssh-privatekey"
+
 ```
 
 

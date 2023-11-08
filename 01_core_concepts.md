@@ -1,4 +1,16 @@
 
+## 0 : Shortcuts
+First, here are some shortcuts used during the exercices, that you can integrate to your .bashrc:
+
+```bash
+export f="--force"
+export dry="--dry-run=client"
+export o="-oyaml"
+alias k="kubectl"
+alias kshow="kubectl config get-contexts"
+alias kx="kubectl config use-context"
+alias kn="kubectl config set-context --current --namespace"
+```
 
 ## 1 : Create a namespace called 'ns1' and a pod with image nginx called nginx on this namespace
 
@@ -16,7 +28,6 @@ export dry=--dry-run=client
 export o=-oyaml
 
 k run nginx --image=nginx $dry $o > files/01_02_po.yml
-
 ```
 
 ## 3 : Create a busybox pod (using kubectl command) that runs the command "env". Run it and see the output

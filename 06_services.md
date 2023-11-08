@@ -3,17 +3,23 @@
 ## 1 : Create a pod with image nginx called nginx and expose its port 80
 
 ```bash
-
+k run nginx --image nginx --port 80 --expose=true
 ```
 
 ## 2 : Confirm that ClusterIP has been created. Also check endpoints
 
 ```bash
+k get svc nginx $o | grep -i clusterip
+
+k get ep
 ```
 
 ## 3 : Get service's ClusterIP, create a temp busybox pod and 'hit' that IP with wget
 
 ```bash
+k get svc nginx $o | grep -i clusterip
+
+k run busybox --image=busybox --restart=Never -it --rm -- wget -O- http://10.96.128.56
 ```
 
 ## 4 : Convert the ClusterIP to NodePort for the same service and find the NodePort port. Hit service using Node's IP. Delete the service and the pod at the end.

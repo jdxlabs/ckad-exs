@@ -105,7 +105,7 @@ k taint node kind1-control-plane tier=frontend:NoSchedule
 # show taints of nodes
 k get nodes -o json | jq '.items[].spec.taints'
 
-k run nginx --image=nginx $dry $o > files/03_14_po.yml
+k run nginx --image=nginx $dry $o > files/03_14_po.yaml
 
 # add toleration to nginx.yaml, after the containers section
 tolerations:
@@ -114,13 +114,13 @@ tolerations:
   value: "frontend"
   effect: "NoSchedule"
 
-k apply -f files/03_14_po.yml
+k apply -f files/03_14_po.yaml
 ```
 
 ## 15 : Create a pod that will be placed on node kind1-control-plane. Use nodeSelector and tolerations.
 
 ```bash
-k run nginx --image=nginx $dry $o > files/03_15_po.yml
+k run nginx --image=nginx $dry $o > files/03_15_po.yaml
 
 # Add nodeSelector and tolerations in the "spec" section
   nodeSelector:
@@ -257,7 +257,7 @@ k delete hpa nginx
 ## 34 : Implement canary deployment by running two instances of nginx marked as version=v1 and version=v2 so that the load is balanced at 75%-25% ratio
 
 ```bash
-k create deploy nginx --image=nginx $dry $o > files/03_34_deploy1_po.yml
+k create deploy nginx --image=nginx $dry $o > files/03_34_deploy1_po.yaml
 # add label : version: v1
 # and an initContainer to show version
 #   volumeMounts:
@@ -277,15 +277,15 @@ k create deploy nginx --image=nginx $dry $o > files/03_34_deploy1_po.yml
 # - name: workdir
 #   emptyDir: {}
 
-k create deploy nginx --image=nginx $dry $o > files/03_34_deploy2_po.yml
+k create deploy nginx --image=nginx $dry $o > files/03_34_deploy2_po.yaml
 # add label : version: v2
 # and an initContainer to show version
 
-k create service clusterip nginx --tcp=80:80 $dry $o > files/03_34_svc_po.yml
+k create service clusterip nginx --tcp=80:80 $dry $o > files/03_34_svc_po.yaml
 
-k apply -f files/03_34_deploy1_po.yml
-k apply -f files/03_34_deploy2_po.yml
-k apply -f files/03_34_svc.yml
+k apply -f files/03_34_deploy1_po.yaml
+k apply -f files/03_34_deploy2_po.yaml
+k apply -f files/03_34_svc.yaml
 
 # check the response, at 75-25 ratio :
 k run tmp --image=busybox --rm -it --restart=Never -- sh -c 'while sleep 1; do wget -qO- http://nginx-svc; done'
@@ -336,7 +336,7 @@ k delete job box
 ## 41 : Create a job but ensure that it will be automatically terminated by kubernetes if it takes more than 30 seconds to execute
 
 ```bash
-k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_41_job.yml
+k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_41_job.yaml
 
 # add the spec : 
 # spec:
@@ -346,7 +346,7 @@ k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo worl
 ## 42 : Create the same job, make it run 5 times, one after the other. Verify its status and delete it
 
 ```bash
-k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_42_job.yml
+k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_42_job.yaml
 
 # add the spec :
 # spec:
@@ -356,7 +356,7 @@ k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo worl
 ## 43 : Create the same job, but make it run 5 parallel times
 
 ```bash
-k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_43_job.yml
+k create job box --image=busybox $dry $o -- sh -c "echo hello;sleep 30;echo world" > files/03_43_job.yaml
 
 # add the spec :
 # spec:
@@ -391,7 +391,7 @@ k delete cj box
 ## 47 : Create a cron job with image busybox that runs every minute and writes 'date; echo Hello from the Kubernetes cluster' to standard output. The cron job should be terminated if it takes more than 17 seconds to start execution after its scheduled time (i.e. the job missed its scheduled time) 
 
 ```bash
-k create cronjob box --image=busybox --schedule="*/1 * * * *" $dry $o -- sh -c "date; echo Hello from the Kubernetes cluster" > files/03_47_cronjob.yml
+k create cronjob box --image=busybox --schedule="*/1 * * * *" $dry $o -- sh -c "date; echo Hello from the Kubernetes cluster" > files/03_47_cronjob.yaml
 
 # add the spec :
 # spec:
@@ -401,7 +401,7 @@ k create cronjob box --image=busybox --schedule="*/1 * * * *" $dry $o -- sh -c "
 ## 48 : Create a cron job with image busybox that runs every minute and writes 'date; echo Hello from the Kubernetes cluster' to standard output. The cron job should be terminated if it successfully starts but takes more than 12 seconds to complete execution
 
 ```bash
-k create cronjob box --image=busybox --schedule="*/1 * * * *" $dry $o -- sh -c "date; echo Hello from the Kubernetes cluster" > files/03_48_cronjob.yml
+k create cronjob box --image=busybox --schedule="*/1 * * * *" $dry $o -- sh -c "date; echo Hello from the Kubernetes cluster" > files/03_48_cronjob.yaml
 
 # add the spec (in jobTemplate) :
 # spec:

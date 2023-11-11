@@ -4,6 +4,10 @@
 
 ```bash
 k run nginx --image nginx --port 80 --expose=true
+
+# or
+k run nginx --image nginx --port 80
+k expose pod nginx --port 80
 ```
 
 ## 2 : Confirm that ClusterIP has been created. Also check endpoints
@@ -19,12 +23,13 @@ k get ep
 ```bash
 k get svc nginx $o | grep -i clusterip
 
-k run busybox --image=busybox --restart=Never -it --rm -- wget -O- http://10.96.128.56
+k run busybox --image=busybox --restart=Never -it --rm -- wget -qO- http://10.96.128.56
 ```
 
 ## 4 : Convert the ClusterIP to NodePort for the same service and find the NodePort port. Hit service using Node's IP. Delete the service and the pod at the end.
 
 ```bash
+k get svc nginx $o > files/06_04_svc.yaml
 ```
 
 ## 5 : Create a deployment called foo using image 'dgkanatsios/simpleapp' (a simple server that returns hostname) and 3 replicas. Label it as 'app=foo'. Declare that containers in this pod will accept traffic on port 8080 (do NOT create a service yet)

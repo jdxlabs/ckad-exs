@@ -14,7 +14,7 @@ k get po
 export dry=--dry-run=client
 export o=-oyaml
 
-k run nginx --image=nginx $dry $o > files/01_02_po.yml
+k run nginx --image=nginx $dry $o > files/01_02_po.yaml
 ```
 
 ## 3 : Create a busybox pod (using kubectl command) that runs the command "env". Run it and see the output
@@ -24,7 +24,7 @@ k run busybox --image=busybox --restart=Never --command -it --rm -- env
 
 ## 4 : Create a busybox pod (using YAML) that runs the command "env". Run it and see the output
 ```bash
-k run busybox --image=busybox --restart=Never $dry $o -- env > files/01_04_po.yml
+k run busybox --image=busybox --restart=Never $dry $o -- env > files/01_04_po.yaml
 ```
 
 ## 5 : Get the YAML for a new namespace called 'ns2' without creating it
@@ -34,7 +34,7 @@ k create ns ns2 $dry $o
 
 ## 6 : Get the YAML for a new ResourceQuota called 'rq1' with hard limits of 1 CPU, 1G memory and 2 pods without creating it
 ```bash
-k create quota rq1 --hard=cpu=1,memory=1G,pods=2 $dry $o > files/01_06_rq.yml
+k create quota rq1 --hard=cpu=1,memory=1G,pods=2 $dry $o > files/01_06_rq.yaml
 ```
 
 ## 7 : Get pods on all namespaces
@@ -44,7 +44,7 @@ k get po -A
 
 ## 8 : Create a pod with image nginx called nginx and expose traffic on port 80
 ```bash
-k run nginx --image=nginx $dry $o --port=80 > files/01_08_po.yml
+k run nginx --image=nginx $dry $o --port=80 > files/01_08_po.yaml
 ```
 
 ## 9 : Change pod's image to nginx:1.7.1. Observe that the container will be restarted as soon as the image gets pulled
